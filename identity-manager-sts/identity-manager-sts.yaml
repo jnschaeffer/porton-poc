@@ -1,0 +1,25 @@
+server:
+  listen: ":80"
+oauth:
+  issuer: "https://auth.infratographer.com/"
+  accessTokenLifespan: 100
+  secret: abcd1234abcd1234abcd1234abcd1234
+  privateKeys:
+    - keyId: "test"
+      algorithm: RS256
+      path: /etc/identity-manager-sts/privkey.pem
+otel:
+  enabled: false
+  provider: stdout
+  stdout:
+    prettyPrint: true
+storage:
+  type: memory
+  seedData:
+    issuers:
+      - name: "Equinix"
+        uri: "https://auth.equinix.com/"
+        jwksURI: "https://auth.equinix.com/.well-known/jwks.json"
+        claimMappings:
+          "mitb": "true"
+          "infratographer.sub": "'urn:infratographer:user/' + subSHA256"

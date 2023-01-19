@@ -1,0 +1,42 @@
+{
+    "$schema": "https://www.krakend.io/schema/v3.json",
+    "version": 3,
+    "plugin": {
+        "pattern":".so",
+        "folder": "/usr/lib/krakend/plugins/"
+    },
+    "endpoints": [
+        {
+            "endpoint": "/user",
+            "input_headers": [
+                "Authorization"
+            ],
+            "extra_config": {
+                "auth/validator": {
+                    "alg": "RS256",
+                    "jwk_url": "http://identity-manager-sts/jwks.json",
+                    "cache": true
+                }
+            },
+            "backend": [
+                {
+                    "host": [
+                        "http://jwt-inspector:8000"
+                    ],
+                    "url_pattern": "/",
+                    "extra_config": {
+                        "plugin/http-client": {
+                            "name": "porton"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "extra_config": {
+        "plugin/http-server": {
+            "name": ["porton"]
+        }
+    }
+}
+

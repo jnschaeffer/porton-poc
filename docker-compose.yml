@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+
+  porton:
+    build:
+      context: https://github.com/infratographer/porton.git#main
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - type: bind
+        source: ./krakend
+        target: /etc/krakend
+    networks:
+      gatewaynet:
+
+  jwt-inspector:
+    build:
+      context: https://github.com/jnschaeffer/jwt-inspector.git#main
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      JWKS_URI: http://identity-manager-sts/jwks.json
+    networks:
+      gatewaynet:
+
+  identity-manager-sts:
+    build:
+      context: https://github.com/infratographer/identity-manager-sts.git#main
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8081:80"
+    volumes:
+      - type: bind
+        source: ./identity-manager-sts
+        target: /etc/identity-manager-sts
+    networks:
+      gatewaynet:
+
+networks:
+  gatewaynet:
